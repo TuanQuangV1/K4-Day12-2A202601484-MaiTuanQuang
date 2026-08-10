@@ -139,7 +139,18 @@ def chat(
 
 
 if __name__ == "__main__":
+    import os
     import uvicorn
 
-    settings = get_settings()
-    uvicorn.run(app, host="0.0.0.0", port=settings.port)
+    raw_port = os.getenv("PORT", "")
+    try:
+        port = int(raw_port)
+    except (ValueError, TypeError):
+        try:
+            settings = get_settings()
+            port = settings.port
+        except Exception:
+            port = 8000
+
+    uvicorn.run("app.main:app", host="0.0.0.0", port=port)
+
